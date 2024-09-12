@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block 'main' %}
+
+<!--cart start-->
+<div class="row mt-3">
+    
+    <div class="col-md-9">
+        <h5 class="bgmaroon p-2 rounded">Customer Details</h5>
+        {% for x in  data %}
+        {% if forloop.counter == 1 %}
+        <p><strong>Name:</strong>&nbsp;&nbsp;{{x.uid.username}}</p>
+        <p><strong>Mobile:</strong>&nbsp;&nbsp;899999999</p>
+        <p><strong>Email:</strong>&nbsp;&nbsp;{{x.uid.email}}</p>
+        {% endif %}
+        {% endfor %}
+        <h5 class="bgmaroon p-2 rounded">Product Details</h5>
+        <!--product detail row start-->
+        {% if msg %}
+    <h1 class="text-danger mt-5 mb-5">{{msg}}</h1>
+    {% endif %}
+        {% for x in data %}
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <img src="{{x.pid.pimage.url}}" class="card-img-top" alt="...">
+            </div>
+            <div class="col-md-6">
+                <p><strong>Product Name:</strong>&nbsp;&nbsp;{{x.pid.name}}</p>
+                <p><strong>Price:</strong>&nbsp;&nbsp;Rs. {{x.pid.price}}</p>
+                {% if x.pid.cat == 1 %}
+                <p><strong>Category:</strong>&nbsp;&nbsp;Makeup Products</p>
+                {% elif x.pid.cat == 2 %}
+                <p><strong>Category:</strong>&nbsp;&nbsp;Hair Care Products</p>
+                {% elif x.pid.cat == 3 %}
+                <p><strong>Category:</strong>&nbsp;&nbsp;Skin Care Products</p>
+                {% elif x.pid.cat == 4 %}
+                <p><strong>Category:</strong>&nbsp;&nbsp;Appliances</p>
+                {% else %}
+                <p><strong>Category:</strong>&nbsp;&nbsp;Manicure & Pedicure Products</p>
+                {% endif %}
+                <p><strong>Description:</strong>&nbsp;&nbsp;{{x.pid.pdetails}}</p>
+                <p>
+                    <strong>QTY:</strong>
+                    <a href="/updateqty/0/{{x.id}}"><button class="btn btn-danger">-</button></a>
+                    <input type="number" value="{{x.qty}}">
+                    <a href="/updateqty/1/{{x.id}}"><button class="btn btn-success">+</button></a>
+                </p>
+                <a href="/remove/{{x.id}}" class="btn bgmaroon">Remove</a>
+            </div>
+        </div><!--product  detail row end-->
+        {% endfor %}
+    </div><!--customer detail end-->
+    <div class="col-md-3">
+        <h5 class="bgmaroon p-2 rounded">Total Amount</h5>
+        <p><strong>Total({{n}} items):</strong>&nbsp;&nbsp;Rs. {{total}}</p>
+        <p><strong>Total Amount:</strong>&nbsp;&nbsp;Rs. {{total}}</p>
+        <a href="/placeorder" class="btn btncolor">Place an order</a>
+    </div><!--total  amount detail ends-->
+
+</div><!--customer and product details end-->
+<!--cart end-->
+
+{% endblock 'main' %}

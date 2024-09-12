@@ -1,0 +1,40 @@
+.anchor{
+    font-weight: bold;
+    text-decoration: none;
+    color: #922b21;
+}
+.icon{
+    color: #922b21;
+}
+.cart{
+    font-size: 25px;
+}
+.nav-hover:hover{
+    text-decoration: underline;
+    color: rgb(218, 199, 34);
+    font-size: 18px;
+}
+.alignment{
+    text-align: justify;
+}
+.formalign{
+  position: relative;
+  left: 20rem;
+}
+.bgmaroon{
+background-color: #922b21;
+color: white;
+}
+.btncolor{
+    background-color: #922b21;
+    color: white;
+    font-weight: bold;
+}
+.textcolor::placeholder{
+    color: #922b21;
+}
+.btncolor:hover{
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+}

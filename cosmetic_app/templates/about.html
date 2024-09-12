@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'main' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="text-center">About Us</h4>
+            <p class="alignment">Welcome to Beauty Cosmetic, where beauty meets excellence! Founded in 2000, our store is dedicated to providing you with the highest quality cosmetic products to enhance your natural beauty and boost your confidence.</p>
+            <p class="alignment">At Beauty Cosmetic, we believe that beauty is for everyone. Our extensive range of products includes everything from skincare essentials and makeup must-haves to luxurious fragrances and grooming accessories</p>
+            <p class="alignment">
+                We carefully curate our selection to ensure that every item meets our strict standards for quality, efficacy, and safety.
+                
+                Our mission is to empower our customers to express their unique style and personality through the power of cosmetics.</p>
+                <p class="alignment">Thank you for choosing Beauty Cosmetic. We are excited to be a part of your beauty journey and look forward to helping you shine, inside and out.</p>
+                <h5>For inquiries or assistance, please reach out to us at:</h5>
+                <p><strong>Email:</strong>&nbsp;&nbsp;beautycosmetic@gmail.com</p>
+                <p><strong>Phone Number:</strong>&nbsp;&nbsp;888888888</p>
+
+        </div>
+        <div class="col-md-6">
+            <img src="{% static 'assets/images/shop.jpg' %}" class="card-img-top rounded mt-5" title="{{products.name}}" alt="...">
+        </div>
+    </div>
+</div>
+{% endblock 'main' %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'main' %}
+
+ 
+
+<div class="row mt-3">
+    <div class="col-md-4 bg-light">
+        <h5>Filter by Category</h5><hr>
+        <p><a href="/" class="anchor"> All</a></p>
+        <p><a href="/catfilter/1" class="anchor">By Makeup</a></p>
+        <p><a href="/catfilter/2" class="anchor">By Hair Care</a></p>
+        <p><a href="/catfilter/3" class="anchor">By Skin Care</a></p>
+        <p><a href="/catfilter/4" class="anchor">By Appliances</a></p>
+        <p><a href="/catfilter/5" class="anchor">By Manicure & Pedicure</a></p>
+        <h5>Filter by Price Range</h5><hr>
+        <form action="/range">
+            <div class="mb-3">
+                <label for="Input1" class="form-label">Minimum Value</label>
+                <input type="number" name="min" class="form-control" id="Input1" placeholder="Enter Minimum Value">
+              </div><!--min value end-->
+              <div class="mb-3">
+                <label for="Input2" class="form-label">Maximum Value</label>
+                <input type="number" name="max" class="form-control" id="Input2" placeholder="Enter Maximum Value">
+              </div><!--max value ends-->
+              <div class="mb-3">
+                <input type="submit" value="Submit" class="btn btncolor"/>
+              </div><!--submit button ends-->
+        </form>
+        <h5>Sort by Price</h5><hr>
+        <p><a href="/sort/0" class="anchor">Low to High</a></p>
+        <p><a href="/sort/1" class="anchor">High to Low</a></p>
+    </div><!--filter section ends-->
+    <div class="col-md-8">
+        <div class="row">
+          <form action="/search" method="GET">
+            <div class="input-group mb-3">
+              <input type="text" name="search" class="form-control shadow textcolor" placeholder="search for products" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <button class="btn btn-outline-secondary btncolor shadow" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+          {% for x in products %}
+            <div class="col-md-4 mt-3">
+                <div class="card shadow " style="width: 100%;">
+                    <img src="{{x.pimage.url}}" height="220px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">{{x.name}}</h5>
+                      <p class="card-text">Rs.{{x.price}}</p>
+                      {% if x.cat == 1 %}
+                      <p class="card-text">Makeup</p>
+                      {% elif x.cat == 2 %}
+                      <p class="card-text">Hair Care</p>
+                      {% elif x.cat == 3 %}
+                      <p class="card-text">Skin Care</p>
+                      {% elif x.cat == 4 %}
+                      <p class="card-text">Appliances</p>
+                      {% else %}
+                      <p class="card-text">Manicure & Pedicure</p>
+                      {% endif %}
+                      <a href="/pdetails/{{x.id}}" class="btn btncolor">See Details</a>
+                    </div>
+                  </div>
+            </div><!--product 1 end-->
+            {% endfor %}
+        </div>
+
+    </div><!--product section ends-->
+</div>
+
+<!--main ends-->
+{% endblock 'main' %}
