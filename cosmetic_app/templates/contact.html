@@ -3,31 +3,50 @@
 <div class="container">
     <div class="row mb-5">
         <div class="col-md-6">
-            
-            <form action="/submit" method="POST" class="shadow rounded formalign">
+          
+            <form action="/submitcontact" method="POST" class="shadow rounded formalign">
+              {% csrf_token %}
                 <h4 class="text-center mt-5">Contact  Us</h4>
+                {% if errmsg %}
+          <div class="alert alert-danger alert-dismissible" role="alert">
+              {{errmsg}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endif %}
+          {% if success %}
+          <div class="alert alert-danger alert-dismissible" role="alert">
+              {{success}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endif %}
                 <div class="form-group m-3">
                     <label for="fname">First Name</label>
-                    <input type="text" class="form-control" id="fname" aria-describedby="emailHelp" placeholder="Enter first name">
+                    <input type="text" name="fname" class="form-control" id="fname" aria-describedby="emailHelp" placeholder="Enter first name">
 
                   </div>
                   <div class="form-group m-3">
                     <label for="lname">Last Name</label>
-                    <input type="text" class="form-control" id="lname" aria-describedby="emailHelp" placeholder="Enter last name">
+                    <input type="text" name="lname" class="form-control" id="lname" aria-describedby="emailHelp" placeholder="Enter last name">
 
                   </div>
                 <div class="form-group m-3">
                   <label for="email">Email address</label>
-                  <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="example@gmail.com">
+                  <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="example@gmail.com">
                   <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div class="form-group m-3">
+                  <label for="mob">Mobile Number</label>
+                  <input type="text" name="mob" class="form-control" id="mob" aria-describedby="emailHelp" placeholder="Enter mobile number">
+                  
+                </div>
+                <div class="form-group m-3">
                     <label for="msg">Message</label>
-                    <textarea class="form-control" id="msg" rows="3">Enter your message here!!!</textarea>
+                    <textarea class="form-control" id="msg" rows="3" name="msg">Enter your message here!!!</textarea>
                   </div>
                
                 <button type="submit" class="btn btncolor m-3">Submit</button>
               </form>
+         
         </div>
     </div>
 </div>

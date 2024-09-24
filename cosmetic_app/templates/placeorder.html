@@ -8,10 +8,15 @@
         {% for x in  data %}
         {% if forloop.counter == 1 %}
         <p><strong>Name:</strong>&nbsp;&nbsp;{{x.uid.username}}</p>
-        <p><strong>Mobile:</strong>&nbsp;&nbsp;899999999</p>
+        
         <p><strong>Email:</strong>&nbsp;&nbsp;{{x.uid.email}}</p>
         {% endif %}
         {% endfor %}
+        <p><strong>Mobile Number:</strong>&nbsp;&nbsp;{{address.mobile}}</p>
+        <p><strong>Delivery Address:</strong></p>
+        <p>&nbsp;&nbsp;{{address.line1}}</p>
+        <p>&nbsp;&nbsp;{{address.city}},{{address.state}},{{address.postal_code}}</p>
+        
         <h5 class="bgmaroon p-2 rounded">Product Details</h5>
         <!--product detail row start-->
         {% for x in data %}

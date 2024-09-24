@@ -13,15 +13,20 @@ urlpatterns = [
     path('range',views.range),
     path('about',views.about),
     path('contact',views.contact),
+    path('submitcontact',views.submitcontact),
+    path('blog',views.blog),
     path('search/',views.search),
     path('addtocart/<pid>',views.addtocart),
     path('viewcart',views.cart),
     path('remove/<cid>',views.remove),
     path('updateqty/<qv>/<cid>',views.updateqty),
-    path('placeorder',views.placeorder),
+    path('checkout',views.checkout),
+    path('billaddress',views.deliveryaddress),
+    path('placeorder/<aid>',views.placeorder),
     path('removeorder/<oid>',views.removeorder),
     path('makepayment',views.makepayment),
-    path('sendmail/<uemail>/<uid>',views.sendusermail)
+    path('sendmail/<uemail>/<uid>',views.sendusermail),
+    path('exit/<id>',views.exit),
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

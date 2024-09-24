@@ -21,7 +21,7 @@
                     {% else %}
                     <p><strong>Category:</strong>&nbsp;&nbsp;Manicure & Pedicure Product</p>
                     {% endif %}
-                    <p><strong>Description:</strong>&nbsp;&nbsp; {{x.pdetails}} </p>
+                    
                     <a href="/addtocart/{{x.id}}" class="btn btncolor" >Add to cart</a>&nbsp;
                     <a href="/viewcart" class="btn btncolor">View Cart</a>&nbsp;
                     <a href="/" class="btn btncolor">Shop More</a><br>
@@ -37,6 +37,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
+                    <p class="mt-4"><strong>Description:</strong>&nbsp;&nbsp; {{x.pdetails}} </p>
         </div>
         {% endfor %}
     </div>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block 'main' %}
+<div class="container">
+    <div class="row">
+        <h5 class="bgmaroon p-2 rounded">Billing Address</h5>
+        <div class="col-md-6">
+            {% if errmsg %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    {{errmsg}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+            <form method="POST" action="/billaddress">
+                {% csrf_token %}
+                
+              <div class="mb-3">
+                <label for="mob" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="mob" name="mob" placeholder="Enter Mobile Number">
+             </div>
+             <div class="mb-3">
+                <label for="add" class="form-label">Address Line 1</label>
+                <input type="text" class="form-control" id="add" name="line1" placeholder="Enter Apartment,colony,Area ">
+             </div>
+             <div class="mb-3">
+                <label for="city" class="form-label"> City</label>
+                <input type="text" class="form-control" id="city" name="city" placeholder="Enter city ">
+             </div>
+             <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" id="state" name="state" placeholder="Enter State">
+             </div>
+             <div class="mb-3">
+                <label for="postalcode" class="form-label">Postal Code</label>
+                <input type="number" class="form-control" id="postalcode" name="code" placeholder="Enter Postal code" required>
+             </div>
+                <button type="submit" class="btn btncolor">Submit</button>
+              </form>
+        </div>
+    </div>
+</div>
+{% endblock 'main' %}

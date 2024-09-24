@@ -1,6 +1,7 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect,get_object_or_404
 from django.contrib.auth.models import User
-from .models import Product,Cart,Order
+from .models import Product,Cart,Order,CoverImage,BeautyTips,Contact,Address
+from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth import authenticate,login,logout
 import random
@@ -12,7 +13,8 @@ def home(request):
     p=Product.objects.filter(is_active=True)
     context={}
     context['products']=p
-
+    i=CoverImage.objects.all()
+    context['cover']=i
     return render(request,'index.html',context)
 
 def product_details(request,pid):
@@ -103,6 +105,31 @@ def about(request):
 def contact(request):
     return render(request,'contact.html')
 
+def submitcontact(request):
+    context={}
+    if request.method=='POST':
+        fname=request.POST['fname']
+        lname=request.POST['lname']
+        email=request.POST['email']
+        msg=request.POST['msg']
+        mob=request.POST['mob']
+        if fname=="" or lname=="" or email=="" or mob=="" or msg=="":
+            context['errmsg']="Fields cannot be empty"
+            return render(request,'contact.html',context)
+        else:
+            c=Contact.objects.create(fname=fname,lname=lname,email=email,msg=msg,mob=mob)
+            c.save()
+            context['success']="Your message sent successfully!! "
+            return render(request,'contact.html',context)
+    else:
+        return render(request,'contact.html')
+
+def blog(request):
+    t=BeautyTips.objects.all()
+    context={}
+    context['tips']=t
+    return render(request,'blog.html',context)
+
 def search(request):
     search = request.GET.get('search', '')
     context = {}
@@ -189,19 +216,58 @@ def updateqty(request,qv,cid):
             c.update(qty=t)
     return redirect('/viewcart')
 
-def placeorder(request):
+def checkout(request):
+    c=Cart.objects.filter(uid=request.user.id)
+    u=User.objects.get(id=request.user.id)
+    context={}
+    # print(c[0].uid)
+    if not c:
+        # If the cart is empty, show a message and redirect to the cart page
+        context['msg']="Your cart is empty. Please add products to your cart before checking out."
+        return render(request,'cart.html',context)
+   
+    context['data']=c
+    context['user']=u
+    print(u)
+    return render(request,'address.html',context)
+
+def deliveryaddress(request):
+    u = get_object_or_404(User, id=request.user.id)
+    context = {'user': u} 
+    if request.method == "POST":
+        mob = request.POST['mob']
+        line = request.POST['line1']
+        city = request.POST['city']
+        state = request.POST['state']
+        code = request.POST['code']
+        
+        if not all([mob, line, city, state, code]):
+            context['errmsg'] = "All Fields Are Compulsory."
+            return render(request, 'address.html', context)
+        else:
+            a=Address.objects.create(user=u, line1=line, city=city, mobile=mob, state=state, postal_code=code)
+            a.save()
+          
+            return redirect(f"/placeorder/{a.id}")
+    
+    return render(request, 'address.html', context)
+
+
+def placeorder(request,aid):
     userid=request.user.id
     c=Cart.objects.filter(uid=userid)
     oid=random.randrange(1000,9999)
+    address = get_object_or_404(Address, id=aid)
     #print(oid)
     for x in c:
-        o=Order.objects.create(order_id=oid, uid=x.uid,pid=x.pid,qty=x.qty)
+        o=Order.objects.create(order_id=oid, uid=x.uid,pid=x.pid,qty=x.qty,aid=address)
         o.save()
         x.delete()
     orders=Order.objects.filter(uid=userid)
     #print(orders)
     context={}
     context['data']=orders
+    context['address']=address
     s=0
     np=len(orders)
     for x in orders:
@@ -244,7 +310,7 @@ def sendusermail(request,uemail,uid):
         # msg+=f"Your order is placed for {x.pid.name} and price for that product is {x.pid.price}"
         # print(msg)
         msg += f"""
-        Thanks for visiting Estore...
+        Thanks for visiting Beauty Cosmetic Store...
         Product Name : {x.pid.name} and 
         Product Price : {x.pid.price}
         
@@ -256,4 +322,16 @@ def sendusermail(request,uemail,uid):
         [uemail],
         fail_silently=False,
     )
-    return HttpResponse("Mail sent successfully")
+    context={}
+    context['user']=o[0].uid
+    return render(request,'paymentdone.html',context)
+
+def exit(request,id):
+    print(id)
+    o=Order.objects.filter(uid=id)
+    print(o)
+    o.delete()
+    return redirect('/')
+
+# def exit(request):
+#     return redirect('/')

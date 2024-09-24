@@ -1,12 +1,33 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block 'main' %}
-
+<div class="container">
+  <div class="row">
+    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel" style="height: 250px;">
+      <div class="carousel-inner">
+        {% for x in cover %}
+        <div class="carousel-item active" data-bs-interval="900">
+          <img src="{{x.image.url}}" class="d-block w-100" alt="..." style="height:250px;">
+        </div>
+        {% endfor %}
+        
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
  
 
 <div class="row mt-3">
     <div class="col-md-4 bg-light">
-        <h5>Filter by Category</h5><hr>
+        <h5 class="mt-4">Filter by Category</h5><hr>
         <p><a href="/" class="anchor"> All</a></p>
         <p><a href="/catfilter/1" class="anchor">By Makeup</a></p>
         <p><a href="/catfilter/2" class="anchor">By Hair Care</a></p>
@@ -30,6 +51,10 @@
         <h5>Sort by Price</h5><hr>
         <p><a href="/sort/0" class="anchor">Low to High</a></p>
         <p><a href="/sort/1" class="anchor">High to Low</a></p>
+        <h5>Tips Related To  Beauty</h5><hr>
+        <p><a href="/blog" class="anchor">Hair Care Tips</a></p>
+        <p><a href="/blog" class="anchor">Skin Care Tips</a></p>
+        <p><a href="/blog" class="anchor">Makeup Tips</a></p>
     </div><!--filter section ends-->
     <div class="col-md-8">
         <div class="row">
