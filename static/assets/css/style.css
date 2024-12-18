@@ -12,6 +12,33 @@ body{
 .cart{
     font-size: 25px;
 }
+.btn-minus{
+    position: relative; 
+    left: 10px; 
+    top: -3.5px;
+    z-index: 1;
+    background-color: #922b21;
+    color: white;
+}
+.btn-plus{
+    position: relative;
+     left: -20px; 
+     top: -3.5px;
+     z-index: 1;
+     background-color: #922b21;
+    color: white;
+}
+.btn-minus:hover,.btn-plus:hover{
+    background-color: #922b21;
+    color: aliceblue;
+}
+.qty-input{
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    color: #922b21;
+    font-weight: bold;
+}
 .nav-hover:hover{
     text-decoration: underline;
     color: rgb(218, 199, 34);

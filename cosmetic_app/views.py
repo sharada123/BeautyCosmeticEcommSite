@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate,login,logout
 import random
 import razorpay
 from django.core.mail import send_mail
+import re
 # Create your views here.
 def home(request):
     #print(request.user.is_authenticated)
@@ -25,18 +26,20 @@ def product_details(request,pid):
 
 def register(request):
     if request.method=='POST':
+        fname=request.POST['fname']
+        lname=request.POST['lname']
         uname=request.POST['uname']
         upass=request.POST['upass']
         ucpass=request.POST['ucpass']
         # print(uname,"-",upass,"-",ucpass)
         context={}
-        if uname=="" or upass=="" or ucpass=="":
+        if uname=="" or upass=="" or ucpass=="" or fname=="" or lname=="":
             context['errmsg']="Fields cannot be empty"
         elif upass!=ucpass:
             context['errmsg']="Password and confirm password didn't matched"
         else:
             try:
-                u=User.objects.create(username=uname,password=upass,email=uname)
+                u=User.objects.create(username=uname,password=upass,email=uname,first_name=fname,last_name=lname)
                 u.set_password(upass)
                 u.save()
                 context['success']="User Created Successfully"
@@ -77,6 +80,8 @@ def catfilter(request,cv):
     p=Product.objects.filter(q1 & q2)
     context={}
     context['products']=p
+    i=CoverImage.objects.all()
+    context['cover']=i
     return render(request,'index.html', context)
 
 def sort(request,sv):
@@ -87,6 +92,8 @@ def sort(request,sv):
     p=Product.objects.filter(is_active=True).order_by(col)
     context={}
     context['products']=p
+    i=CoverImage.objects.all()
+    context['cover']=i
     return render(request,'index.html',context)
 
 def range(request):
@@ -98,6 +105,8 @@ def range(request):
     p=Product.objects.filter(q1 & q2 & q3)
     context={}
     context['products']=p
+    i=CoverImage.objects.all()
+    context['cover']=i
     return render(request,'index.html',context)
 
 def about(request):
@@ -178,16 +187,15 @@ def addtocart(request,pid):
         return redirect("/login")
 
 def cart(request):
-    #u=request.user.id   # id of logged in user 
     context={}
     if request.user.is_authenticated:
-        c=Cart.objects.filter(uid=request.user.id) # retrives details of logged in user
+        c=Cart.objects.filter(uid=request.user.id) 
         if c:
             s=0
             np=len(c)
-            for x in c:       #loop for calculate total price of all products of that logged in user
-                s+=x.pid.price
-            print(s)
+            for x in c:
+                s+=x.pid.price*x.qty
+            
             context['total']=s
             context['data']=c
             context['n']=np
@@ -204,12 +212,10 @@ def remove(request,cid):
 
 def updateqty(request,qv,cid):
     c =Cart.objects.filter(id=cid)
-    #print(c)
-    print(c[0].qty)
     if qv == '1':
         t=c[0].qty+1
         c.update(qty=t)
-        # print(t)
+        print(t)
     else:
         if c[0].qty > 1:
             t=c[0].qty-1
@@ -219,8 +225,9 @@ def updateqty(request,qv,cid):
 def checkout(request):
     c=Cart.objects.filter(uid=request.user.id)
     u=User.objects.get(id=request.user.id)
+    address=Address.objects.filter(user=request.user.id)
     context={}
-    # print(c[0].uid)
+   
     if not c:
         # If the cart is empty, show a message and redirect to the cart page
         context['msg']="Your cart is empty. Please add products to your cart before checking out."
@@ -228,12 +235,22 @@ def checkout(request):
    
     context['data']=c
     context['user']=u
-    print(u)
+    if not address.exists():
+        return render(request,'address.html')
+    context={
+        'city':address[0].city,
+        'line':address[0].line1,
+        'state':address[0].state,
+        'code':address[0].postal_code,
+        'mobile':address[0].mobile
+    }
+    
     return render(request,'address.html',context)
 
 def deliveryaddress(request):
     u = get_object_or_404(User, id=request.user.id)
     context = {'user': u} 
+
     if request.method == "POST":
         mob = request.POST['mob']
         line = request.POST['line1']
@@ -241,14 +258,40 @@ def deliveryaddress(request):
         state = request.POST['state']
         code = request.POST['code']
         
+        # Check if all fields are filled
         if not all([mob, line, city, state, code]):
             context['errmsg'] = "All Fields Are Compulsory."
             return render(request, 'address.html', context)
+
+        # Validate mobile number
+        pattern = r'^(\+\d{1,3}[- ]?)?\d{10}$'
+        if not re.match(pattern, mob):
+            context['errmsg'] = "Invalid mobile number."
+            return render(request, 'address.html', context)
+
+        # Try to get the most recent address for the user
+        address = Address.objects.filter(user=u).order_by('-id').first()
+        if address:
+            # Update the existing address
+            address.line1 = line
+            address.city = city
+            address.mobile = mob
+            address.state = state
+            address.postal_code = code
+            address.save()
         else:
-            a=Address.objects.create(user=u, line1=line, city=city, mobile=mob, state=state, postal_code=code)
-            a.save()
-          
-            return redirect(f"/placeorder/{a.id}")
+            # Create a new address if none exists
+            address = Address.objects.create(
+                user=u,
+                line1=line,
+                city=city,
+                mobile=mob,
+                state=state,
+                postal_code=code
+            )
+        
+        # Redirect after address is created/updated
+        return redirect(f"/placeorder/{address.id}")
     
     return render(request, 'address.html', context)
 
@@ -280,7 +323,9 @@ def removeorder(request,oid):
     o=Order.objects.filter(id=oid)
     #print(o)
     o.delete()
-    return redirect('/placeorder')
+    return redirect('/vieworder')
+def viewOrder(request):
+    return render(request,'placeorder.html')
 
 def makepayment(request):
     orders=Order.objects.filter(uid=request.user.id)
@@ -307,8 +352,6 @@ def sendusermail(request,uemail,uid):
     msg=""
     print(o[0].pid.name)
     for x in o:
-        # msg+=f"Your order is placed for {x.pid.name} and price for that product is {x.pid.price}"
-        # print(msg)
         msg += f"""
         Thanks for visiting Beauty Cosmetic Store...
         Product Name : {x.pid.name} and 
@@ -326,12 +369,12 @@ def sendusermail(request,uemail,uid):
     context['user']=o[0].uid
     return render(request,'paymentdone.html',context)
 
-def exit(request,id):
-    print(id)
-    o=Order.objects.filter(uid=id)
-    print(o)
-    o.delete()
-    return redirect('/')
-
-# def exit(request):
+# def exit(request,id):
+#     print(id)
+#     o=Order.objects.filter(uid=id)
+#     print(o)
+#     o.delete()
 #     return redirect('/')
+
+def exit(request):
+    return redirect('/')

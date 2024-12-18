@@ -67,7 +67,8 @@
           {% for x in products %}
             <div class="col-md-4 mt-3">
                 <div class="card shadow " style="width: 100%;">
-                    <img src="{{x.pimage.url}}" height="220px" class="card-img-top" alt="...">
+                  <a href="/pdetails/{{x.id}}">
+                    <img src="{{x.pimage.url}}" height="220px" class="card-img-top" alt="..." for="seebtn"></a>
                     <div class="card-body">
                       <h5 class="card-title">{{x.name}}</h5>
                       <p class="card-text">Rs.{{x.price}}</p>
@@ -82,7 +83,7 @@
                       {% else %}
                       <p class="card-text">Manicure & Pedicure</p>
                       {% endif %}
-                      <a href="/pdetails/{{x.id}}" class="btn btncolor">See Details</a>
+                      <a href="/pdetails/{{x.id}}" class="btn btncolor" id="seebtn">See Details</a>
                     </div>
                   </div>
             </div><!--product 1 end-->

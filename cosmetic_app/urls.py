@@ -22,11 +22,12 @@ urlpatterns = [
     path('updateqty/<qv>/<cid>',views.updateqty),
     path('checkout',views.checkout),
     path('billaddress',views.deliveryaddress),
+    path('vieworder',views.viewOrder),
     path('placeorder/<aid>',views.placeorder),
     path('removeorder/<oid>',views.removeorder),
     path('makepayment',views.makepayment),
     path('sendmail/<uemail>/<uid>',views.sendusermail),
-    path('exit/<id>',views.exit),
+    path('exit',views.exit),
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
